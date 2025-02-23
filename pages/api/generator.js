@@ -26,16 +26,7 @@ export default function handler(req, res) {
     const paramsString = paramsArray.join(", ");
   
     // Generate JavaScript function
-    const generatedCode = `
-  /**
-   * ${description}
-   * @param {${parameters.split(",").map((p) => p.trim().split(":")[1] || "any").join("}, @param {")}}
-   * @returns {${returnType}}
-   */
-  function ${functionName}(${paramsString}) {
-      // TODO: Implement the function logic
-      return null; // Replace with actual implementation
-  }
+    const generatedCode = 
   `;
   
     res.status(200).json({ code: generatedCode });
