@@ -1,5 +1,10 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
+To push the changes to Github, open terminal and run:
+
+git add . && git commit -m "Your commit message" && git push origin main
+
+
 ## Getting Started
 
 First, run the development server:
