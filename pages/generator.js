@@ -1,4 +1,8 @@
 export default function handler(req, res) {
+  res.status(200).json({ message: "Welcome to Easy Info!" });
+}
+
+/* export default function handler(req, res) {
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method Not Allowed" });
     }
@@ -35,4 +39,4 @@ export default function handler(req, res) {
   `;
   
     res.status(200).json({ code: generatedCode });
-  }  
+  }   */
