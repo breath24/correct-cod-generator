@@ -31,7 +31,7 @@ async function get_chat_response(prompt) {
         );
 
         // console.log("GPT-4 Response received");
-        console.log("📩 GPT-4 Response received:", response.data.choices[0].message.content);
+        console.log("GPT-4 Response received:", response.data.choices[0].message.content);
 
         return response.data.choices[0].message.content;
 

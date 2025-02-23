@@ -2,7 +2,7 @@
 import get_chat_response from './OpenAIChat.js';  // Adjust the path accordingly
 
 export default async function handler(req, res) {
-    console.log("✅ Received a request:", req.method);
+    console.log("Received a request:", req.method);
 
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method Not Allowed" });
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
             console.log("Failed to get response from OpenAI API");
             return res.status(500).json({ error: "Failed to get response from OpenAI API" });
         }else{
-            console.log("📩 GPT-4 Response received:", chatResponse);
+            console.log("GPT-4 Response received:", chatResponse);
         }
 
         // Return the generated code in the response
