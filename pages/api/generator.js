@@ -3,6 +3,9 @@
 } */
 
 export default function handler(req, res) {
+
+  console.log("✅ Received a request:", req.method);
+  
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method Not Allowed" });
     }
@@ -26,7 +29,7 @@ export default function handler(req, res) {
     const paramsString = paramsArray.join(", ");
   
     // Generate JavaScript function
-    const generatedCode = ``;
+    const generatedCode = `XXX`;
   
     res.status(200).json({ code: generatedCode });
   }   

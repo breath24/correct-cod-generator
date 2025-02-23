@@ -16,6 +16,8 @@ export default function Home() {
       body: JSON.stringify({ functionName, parameters, returnType, description }),
     });
 
+    console.log("functionName: ", functionName);
+
     const data = await response.json();
     setGeneratedCode(data.code);
   };
