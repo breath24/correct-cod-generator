@@ -8,7 +8,7 @@ console.log('API Key:', apiKey); // Ensure the API key is being loaded correctly
 const API_URL = 'https://api.openai.com/v1/chat/completions';
 
 async function get_chat_response(prompt) {
-    console.log('API Keyy:', apiKey); // Ensure the API key is being loaded correctly
+    console.log('API Keyyy:', apiKey); // Ensure the API key is being loaded correctly
 
     if (!apiKey) {
         console.log('OpenAI API key is not configured');
