@@ -8,7 +8,7 @@ export default function Home() {
   const [generatedCode, setGeneratedCode] = useState("");
 
   const handleGenerate = async () => {
-    const response = await fetch("/api/generate", {
+    const response = await fetch("/api/generator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

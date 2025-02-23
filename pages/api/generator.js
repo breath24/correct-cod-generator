@@ -5,13 +5,20 @@
 export default function handler(req, res) {
 
   console.log("✅ Received a request:", req.method);
-  
+
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method Not Allowed" });
     }
   
     const { functionName, parameters, returnType, description } = req.body;
   
+    console.log("functionName: ", functionName);
+    console.log("parameters: ", parameters);
+    console.log("returnType: ", returnType);
+    console.log("description: ", description);
+    
+
+
     if (!functionName || !parameters || !returnType || !description) {
       return res.status(400).json({ error: "All fields are required" });
     }
