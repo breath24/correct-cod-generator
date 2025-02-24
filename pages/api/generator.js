@@ -8,13 +8,14 @@ export default async function handler(req, res) {
       return res.status(405).json({ error: "Method Not Allowed" });
     }
 
-    const { language, functionName, parameters, returnType, description } = req.body;
+    const { language, functionName, parameters, returnType, description, security } = req.body;
 
     console.log("language: ", language);
     console.log("functionName: ", functionName);
     console.log("parameters: ", parameters);
     console.log("returnType: ", returnType);
     console.log("description: ", description);
+    console.log("security: ", security);
 
     if (!language || !functionName || !parameters || !returnType || !description) {
       return res.status(400).json({ error: "All fields are required" });
@@ -32,9 +33,12 @@ export default async function handler(req, res) {
 
     const paramsString = paramsArray.join(", ");
 
-    // Generate a prompt for the GPT model
+    // Generate a prompt for the GPT model with security consideration
+    const securityClause = security ? 'The code must be protected against common security vulnerabilities including but not limited to: input validation, SQL injection, XSS attacks, buffer overflows, and must follow secure coding practices. ' : '';
+    
     const prompt = `Generate a ${language} function named '${functionName}' with the following parameters: ${parameters}. 
     It should return a ${returnType} and perform the following operation: ${description}. 
+    ${securityClause}
     Make sure the code follows ${language} best practices and conventions. 
     Only provide the code implementation without any explanation.`;
     console.log("prompt: ", prompt);

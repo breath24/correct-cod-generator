@@ -1,12 +1,13 @@
 import { useState } from "react";
 
 export default function Home() {
-  const [language, setLanguage] = useState("javascript"); // Add new state
+  const [language, setLanguage] = useState("javascript");
   const [functionName, setFunctionName] = useState("");
   const [parameters, setParameters] = useState("");
   const [returnType, setReturnType] = useState("");
   const [description, setDescription] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
+  const [securityEnabled, setSecurityEnabled] = useState(false);  // Add this line
 
   const handleGenerate = async () => {
     const response = await fetch("/api/generator", {
@@ -15,11 +16,12 @@ export default function Home() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ 
-        language,  // Include language in the request
+        language,
         functionName, 
         parameters, 
         returnType, 
-        description 
+        description,
+        securityEnabled  // Add this line
       }),
     });
 
@@ -117,6 +119,41 @@ export default function Home() {
           placeholder="Describe the function..."
           style={inputStyle}
         />
+
+        <div style={{ 
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px"
+        }}>
+          <input
+            type="checkbox"
+            id="security"
+            checked={securityEnabled}
+            onChange={(e) => setSecurityEnabled(e.target.checked)}
+            style={{ 
+              width: "20px",
+              height: "20px",
+              cursor: "pointer",
+              appearance: "none",
+              WebkitAppearance: "none",
+              backgroundColor: securityEnabled ? "#4CAF50" : "white",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              transition: "background-color 0.3s"
+            }}
+          />
+          <label 
+            htmlFor="security" 
+            style={{ 
+              color: "#444", 
+              fontWeight: "500",
+              cursor: "pointer"
+            }}
+          >
+            I want a very secure code
+          </label>
+        </div>
 
         <button 
           onClick={handleGenerate} 
