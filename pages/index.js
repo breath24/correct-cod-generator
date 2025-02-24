@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [language, setLanguage] = useState("javascript");
@@ -9,6 +9,23 @@ export default function Home() {
   const [generatedCode, setGeneratedCode] = useState("");
   const [securityEnabled, setSecurityEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      // Initial check
+      setIsMobile(window.innerWidth <= 768);
+
+      // Add resize listener
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
+      };
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
 
   const handleGenerate = async () => {
     // Check for empty required fields
@@ -66,23 +83,38 @@ export default function Home() {
     transition: "border-color 0.3s"
   };
 
+  const containerStyle = {
+    display: "flex",
+    flexDirection: isMobile ? "column" : "row",
+    padding: "20px",
+    minHeight: "100vh",
+    backgroundColor: "#f0f2f5",
+    gap: "20px"
+  };
+
+  const formStyle = {
+    flex: 1,
+    backgroundColor: "white",
+    padding: "30px",
+    borderRadius: "12px",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    marginRight: isMobile ? 0 : "20px",
+    marginBottom: isMobile ? "20px" : 0
+  };
+
+  const codeStyle = {
+    flex: isMobile ? "none" : 1,
+    backgroundColor: "#2d2d2d",
+    padding: "30px",
+    borderRadius: "12px",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    width: isMobile ? "100%" : "auto"
+  };
+
   return (
-    <div style={{ 
-      display: "flex", 
-      padding: "20px", 
-      minHeight: "100vh",
-      backgroundColor: "#f0f2f5"
-    }}>
-      {/* Left Side: Form */}
-      <div style={{ 
-        flex: 1, 
-        paddingRight: "20px",
-        backgroundColor: "white",
-        padding: "30px",
-        borderRadius: "12px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        marginRight: "20px"
-      }}>
+    <div style={containerStyle}>
+      {/* Left/Top Side: Form */}
+      <div style={formStyle}>
         <h1 style={{ color: "#1a73e8", marginBottom: "20px" }}>Function Generator</h1>
         <p style={{ marginBottom: "25px", color: "#666", lineHeight: "1.5" }}>
           This tool helps you generate correct functions based on your specifications. 
@@ -218,14 +250,8 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Right Side: Generated Code */}
-      <div style={{ 
-        flex: 1, 
-        backgroundColor: "#2d2d2d", 
-        padding: "30px", 
-        borderRadius: "12px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-      }}>
+      {/* Right/Bottom Side: Generated Code */}
+      <div style={codeStyle}>
         <h2 style={{ color: "#fff", marginBottom: "20px" }}>Generated Code:</h2>
         <pre style={{ 
           whiteSpace: "pre-wrap", 
