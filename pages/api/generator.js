@@ -8,14 +8,15 @@ export default async function handler(req, res) {
       return res.status(405).json({ error: "Method Not Allowed" });
     }
 
-    const { functionName, parameters, returnType, description } = req.body;
+    const { language, functionName, parameters, returnType, description } = req.body;
 
+    console.log("language: ", language);
     console.log("functionName: ", functionName);
     console.log("parameters: ", parameters);
     console.log("returnType: ", returnType);
     console.log("description: ", description);
 
-    if (!functionName || !parameters || !returnType || !description) {
+    if (!language || !functionName || !parameters || !returnType || !description) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -32,7 +33,10 @@ export default async function handler(req, res) {
     const paramsString = paramsArray.join(", ");
 
     // Generate a prompt for the GPT model
-    const prompt = `Generate a JavaScript function named '${functionName}' with the following parameters: ${parameters}. It should return a ${returnType} and perform the following operation: ${description}.`;
+    const prompt = `Generate a ${language} function named '${functionName}' with the following parameters: ${parameters}. 
+    It should return a ${returnType} and perform the following operation: ${description}. 
+    Make sure the code follows ${language} best practices and conventions. 
+    Only provide the code implementation without any explanation.`;
     console.log("prompt: ", prompt);
 
     try {

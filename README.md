@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 To push the changes to Github, open terminal and run:
 
-git add . && git commit -m "Your commit message" && git push origin main
+git add . ; git commit -m "Your commit message" ; git push origin main
 
 
 ## Getting Started
