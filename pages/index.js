@@ -11,6 +11,24 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async () => {
+    // Check for empty required fields
+    if (!functionName.trim()) {
+      alert("Please enter a function name");
+      return;
+    }
+    if (!parameters.trim()) {
+      alert("Please specify function parameters");
+      return;
+    }
+    if (!returnType.trim()) {
+      alert("Please specify return type");
+      return;
+    }
+    if (!description.trim()) {
+      alert("Please provide a function description");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await fetch("/api/generator", {
@@ -65,11 +83,11 @@ export default function Home() {
         boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         marginRight: "20px"
       }}>
-        <h1 style={{ color: "#1a73e8", marginBottom: "20px" }}>Ask AI to Implement:</h1>
+        <h1 style={{ color: "#1a73e8", marginBottom: "20px" }}>Function Generator</h1>
         <p style={{ marginBottom: "25px", color: "#666", lineHeight: "1.5" }}>
           This tool helps you generate correct functions based on your specifications. 
           Simply fill in the details below including the function name, parameters, return type, and a 
-          description of what the function should do, and it'll generate the appropriate implementation.
+          description of what the function is supposed do.
         </p>
 
         <label style={{ color: "#444", fontWeight: "500" }}>Programming Language:</label>
@@ -221,6 +239,29 @@ export default function Home() {
         }}>
           {generatedCode || "Generated code will appear here..."}
         </pre>
+        <p style={{
+          color: "#888",
+          fontSize: "12px",
+          marginTop: "15px",
+          fontStyle: "italic",
+          textAlign: "center"
+        }}>
+          Note: Generated code may be truncated if too long. 
+          <a 
+            href="#" 
+            style={{
+              color: "#1a73e8",
+              textDecoration: "none",
+              marginLeft: "5px"
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              alert("This feature coming soon!");
+            }}
+          >
+            Contact us
+          </a> for extended size limits.
+        </p>
       </div>
     </div>
   );
