@@ -20,7 +20,7 @@ async function get_chat_response(prompt) {
             {
                 model: "gpt-4", // Specify GPT-4
                 messages: [{ role: "user", content: prompt }],
-                max_tokens: 200,
+                max_tokens: 2000,
             },
             {
                 headers: {
