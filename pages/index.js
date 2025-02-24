@@ -7,31 +7,36 @@ export default function Home() {
   const [returnType, setReturnType] = useState("");
   const [description, setDescription] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
-  const [securityEnabled, setSecurityEnabled] = useState(false);  // Add this line
+  const [securityEnabled, setSecurityEnabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGenerate = async () => {
-    const response = await fetch("/api/generator", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ 
-        language,
-        functionName, 
-        parameters, 
-        returnType, 
-        description,
-        securityEnabled  // Add this line
-      }),
-    });
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/generator", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          language,
+          functionName, 
+          parameters, 
+          returnType, 
+          description,
+          securityEnabled
+        }),
+      });
 
-    console.log("functionName: ", functionName);
-
-    const data = await response.json();
-    setGeneratedCode(data.code);
+      const data = await response.json();
+      setGeneratedCode(data.code);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Move inputStyle definition outside of JSX
   const inputStyle = {
     display: "block",
     marginBottom: "15px",
@@ -157,22 +162,41 @@ export default function Home() {
 
         <button 
           onClick={handleGenerate} 
+          disabled={isLoading}
           style={{
             padding: "12px 24px",
-            cursor: "pointer",
-            backgroundColor: "#1a73e8",
+            cursor: isLoading ? "not-allowed" : "pointer",
+            backgroundColor: isLoading ? "#ccc" : "#1a73e8",
             color: "white",
             border: "none",
             borderRadius: "8px",
             fontSize: "16px",
             fontWeight: "500",
             transition: "background-color 0.3s",
-            ":hover": {
-              backgroundColor: "#1557b0"
-            }
+            position: "relative"
           }}
         >
-          Generate
+          {isLoading ? "Generating..." : "Generate"}
+          {isLoading && (
+            <div style={{
+              position: "absolute",
+              bottom: "-20px",
+              left: "0",
+              width: "100%",
+              height: "3px",
+              backgroundColor: "#f0f0f0",
+              borderRadius: "3px"
+            }}>
+              <div style={{
+                width: "30%",
+                height: "100%",
+                backgroundColor: "#1a73e8",
+                borderRadius: "3px",
+                transition: "transform 0.3s ease-in-out",
+                transform: `translateX(${Math.random() * 70}%)`
+              }}/>
+            </div>
+          )}
         </button>
       </div>
 
