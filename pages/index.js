@@ -7,6 +7,8 @@ export default function Home() {
   const [returnType, setReturnType] = useState("");
   const [description, setDescription] = useState("");
   const [generatedCode, setGeneratedCode] = useState("");
+  const [codeDescription, setCodeDescription] = useState("");
+  const [codeExample, setCodeExample] = useState("");
   const [securityEnabled, setSecurityEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -65,6 +67,8 @@ export default function Home() {
 
       const data = await response.json();
       setGeneratedCode(data.code);
+      setCodeDescription(data.description);
+      setCodeExample(data.example);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -254,42 +258,59 @@ export default function Home() {
 
       {/* Right/Bottom Side: Generated Code */}
       <div style={codeStyle}>
-        <h2 style={{ color: "#fff", marginBottom: "20px" }}>Generated Code:</h2>
-        <pre style={{ 
-          whiteSpace: "pre-wrap", 
-          wordWrap: "break-word",
-          color: "#e6e6e6",
-          fontSize: "14px",
-          fontFamily: "monospace",
-          backgroundColor: "#1e1e1e",
-          padding: "20px",
-          borderRadius: "8px"
-        }}>
-          {generatedCode || "Generated code will appear here..."}
-        </pre>
-        <p style={{
-          color: "#888",
-          fontSize: "12px",
-          marginTop: "15px",
-          fontStyle: "italic",
-          textAlign: "center"
-        }}>
-          Note: Generated code may be truncated if too long. 
-          <a 
-            href="#" 
-            style={{
-              color: "#1a73e8",
-              textDecoration: "none",
-              marginLeft: "5px"
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              alert("This feature coming soon!");
-            }}
-          >
-            Contact us
-          </a> for extended size limits.
-        </p>
+        {/* <h2 style={{ color: "#fff", marginBottom: "20px" }}>Generated Result:</h2> */}
+        
+        {/* Description Section */}
+        {codeDescription && (
+          <div style={{ marginBottom: "20px" }}>
+            <h3 style={{ color: "#fff", marginBottom: "10px" }}>Description:</h3>
+            <div style={{ 
+              color: "#e6e6e6",
+              backgroundColor: "#1e1e1e",
+              padding: "15px",
+              borderRadius: "8px",
+              fontSize: "14px"
+            }}>
+              {codeDescription}
+            </div>
+          </div>
+        )}
+
+        {/* Implementation Section */}
+        <div style={{ marginBottom: "20px" }}>
+          <h3 style={{ color: "#fff", marginBottom: "10px" }}>Implementation:</h3>
+          <pre style={{ 
+            whiteSpace: "pre-wrap", 
+            wordWrap: "break-word",
+            color: "#e6e6e6",
+            fontSize: "14px",
+            fontFamily: "monospace",
+            backgroundColor: "#1e1e1e",
+            padding: "20px",
+            borderRadius: "8px"
+          }}>
+            {generatedCode || "Generated code will appear here..."}
+          </pre>
+        </div>
+
+        {/* Example Section */}
+        {codeExample && (
+          <div style={{ marginBottom: "20px" }}>
+            <h3 style={{ color: "#fff", marginBottom: "10px" }}>Example Usage:</h3>
+            <pre style={{ 
+              whiteSpace: "pre-wrap", 
+              wordWrap: "break-word",
+              color: "#e6e6e6",
+              fontSize: "14px",
+              fontFamily: "monospace",
+              backgroundColor: "#1e1e1e",
+              padding: "20px",
+              borderRadius: "8px"
+            }}>
+              {codeExample}
+            </pre>
+          </div>
+        )}
       </div>
     </div>
   );

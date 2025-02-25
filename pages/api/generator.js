@@ -38,11 +38,23 @@ export default async function handler(req, res) {
     // Generate a prompt for the GPT model with security consideration
     const securityClause = security ? 'The code must be protected against common security vulnerabilities including but not limited to: input validation, SQL injection, XSS attacks, buffer overflows, and must follow secure coding practices. ' : '';
     
-    const prompt = `Generate a ${language} function named '${functionName}' with the following parameters: ${parameters}. 
-    It should return a ${returnType} and perform the following operation: ${description}. 
+    const prompt = `Generate a ${language} function implementation with the following structure:
+    [DESCRIPTION]
+    A brief, single-paragraph description of what the function does
+    [IMPLEMENTATION]
+    ${language} function ${functionName}(${paramsString}) {
+        // Your implementation here
+    }
+    [EXAMPLE]
+    // A single, clear example showing how to use the function
+    
+    Requirements:
+    - Parameters: ${parameters}
+    - Return type: ${returnType}
+    - Operation: ${description}
     ${securityClause}
-    Make sure the code follows ${language} best practices and conventions. 
-    Only provide the code implementation without any explanation.`;
+    
+    Important: Provide only clean, executable code in the IMPLEMENTATION section without markdown formatting or code block symbols.`;
     console.log("prompt: ", prompt);
 
     try {
@@ -58,7 +70,31 @@ export default async function handler(req, res) {
             console.log("GPT-4 Response received:", chatResponse);
         }
 
-        // Store the request and response in Supabase
+        // Parse the response into sections
+        const sections = {
+            description: '',
+            implementation: '',
+            example: ''
+        };
+
+        // Simple parsing logic - adjust based on actual response format
+        const responseText = chatResponse.toString();
+        const descriptionMatch = responseText.match(/\[DESCRIPTION\](.*?)\[IMPLEMENTATION\]/s);
+        const implementationMatch = responseText.match(/\[IMPLEMENTATION\](.*?)\[EXAMPLE\]/s);
+        const exampleMatch = responseText.match(/\[EXAMPLE\](.*?)$/s);
+
+        if (descriptionMatch) sections.description = descriptionMatch[1].trim();
+        if (implementationMatch) {
+            // Clean the implementation to get only executable code
+            let implementation = implementationMatch[1].trim();
+            implementation = implementation.replace(/```[\w]*\n/g, '');
+            implementation = implementation.replace(/```/g, '');
+            implementation = implementation.trim();
+            sections.implementation = implementation;
+        }
+        if (exampleMatch) sections.example = exampleMatch[1].trim();
+
+        // Store the structured data in Supabase
         const { error } = await supabase
             .from('code_generations')
             .insert({
@@ -67,9 +103,11 @@ export default async function handler(req, res) {
                 parameters,
                 return_type: returnType,
                 description,
-                security: Boolean(security), // Explicitly convert to boolean
+                security: Boolean(security),
                 prompt,
-                generated_code: chatResponse,
+                generated_code: sections.implementation,
+                description_section: sections.description,
+                example_section: sections.example,
                 created_at: new Date().toISOString()
             });
 
@@ -77,8 +115,12 @@ export default async function handler(req, res) {
             console.log("Error storing data in Supabase:", error);
         }
 
-        // Return the generated code in the response
-        res.status(200).json({ code: chatResponse });
+        // Return all sections instead of just the implementation
+        res.status(200).json({
+            description: sections.description,
+            code: sections.implementation,
+            example: sections.example
+        });
 
     } catch (error) {
         console.log("Error in generating code:", error);
