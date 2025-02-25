@@ -1,6 +1,8 @@
 // Import the get_chat_response function (assuming it's exported in a separate file)
 import get_chat_response from './OpenAIChat.js';  // Adjust the path accordingly
 import { supabase } from '../../lib/supabase';
+import geoip from 'geoip-lite';
+
 
 export default async function handler(req, res) {
     console.log("Received a request:", req.method);
