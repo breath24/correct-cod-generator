@@ -1,17 +1,10 @@
 // Import the get_chat_response function (assuming it's exported in a separate file)
 import get_chat_response from './OpenAIChat.js';  // Adjust the path accordingly
 import { supabase } from '../../lib/supabase';
-import geoip from 'geoip-lite';
 
 
 export default async function handler(req, res) {
     console.log("Received a request:", req.method);
-    const forwarded = req.headers["x-forwarded-for"];
-    const ip = forwarded ? forwarded.split(',')[0] : req.socket.remoteAddress;
-    console.log("Request from IP:",ip);     
-    const geo = geoip.lookup(ip) || { country: 'Unknown' };
-    console.log("Request from region:", geo.country);
-
 
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method Not Allowed" });

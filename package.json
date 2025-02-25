@@ -6,14 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "geoip-lite updatedb"
+    "lint": "next lint"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
     "axios": "^1.4.0",
     "dotenv": "^16.0.3",
-    "geoip-lite": "^1.4.10",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
