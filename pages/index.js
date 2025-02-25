@@ -59,7 +59,7 @@ export default function Home() {
           parameters, 
           returnType, 
           description,
-          securityEnabled
+          security: securityEnabled  // Changed from securityEnabled to security
         }),
       });
 

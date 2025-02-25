@@ -66,7 +66,7 @@ export default async function handler(req, res) {
                 parameters,
                 return_type: returnType,
                 description,
-                security,
+                security: Boolean(security), // Explicitly convert to boolean
                 prompt,
                 generated_code: chatResponse,
                 created_at: new Date().toISOString()
