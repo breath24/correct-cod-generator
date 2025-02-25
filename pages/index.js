@@ -210,44 +210,46 @@ export default function Home() {
           </label>
         </div>
 
-        <button 
-          onClick={handleGenerate} 
-          disabled={isLoading}
-          style={{
-            padding: "12px 24px",
-            cursor: isLoading ? "not-allowed" : "pointer",
-            backgroundColor: isLoading ? "#ccc" : "#1a73e8",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "16px",
-            fontWeight: "500",
-            transition: "background-color 0.3s",
-            position: "relative"
-          }}
-        >
-          {isLoading ? "Generating..." : "Generate"}
-          {isLoading && (
-            <div style={{
-              position: "absolute",
-              bottom: "-20px",
-              left: "0",
-              width: "100%",
-              height: "3px",
-              backgroundColor: "#f0f0f0",
-              borderRadius: "3px"
-            }}>
+        <div style={{ textAlign: "center" }}>
+          <button 
+            onClick={handleGenerate} 
+            disabled={isLoading}
+            style={{
+              padding: "12px 24px",
+              cursor: isLoading ? "not-allowed" : "pointer",
+              backgroundColor: isLoading ? "#ccc" : "#1a73e8",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "500",
+              transition: "background-color 0.3s",
+              position: "relative"
+            }}
+          >
+            {isLoading ? "Generating..." : "Generate"}
+            {isLoading && (
               <div style={{
-                width: "30%",
-                height: "100%",
-                backgroundColor: "#1a73e8",
-                borderRadius: "3px",
-                transition: "transform 0.3s ease-in-out",
-                transform: `translateX(${Math.random() * 70}%)`
-              }}/>
-            </div>
-          )}
-        </button>
+                position: "absolute",
+                bottom: "-20px",
+                left: "0",
+                width: "100%",
+                height: "3px",
+                backgroundColor: "#f0f0f0",
+                borderRadius: "3px"
+              }}>
+                <div style={{
+                  width: "30%",
+                  height: "100%",
+                  backgroundColor: "#1a73e8",
+                  borderRadius: "3px",
+                  transition: "transform 0.3s ease-in-out",
+                  transform: `translateX(${Math.random() * 70}%)`
+                }}/>
+              </div>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Right/Bottom Side: Generated Code */}
