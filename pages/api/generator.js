@@ -5,8 +5,10 @@ import { supabase } from '../../lib/supabase';
 export default async function handler(req, res) {
     console.log("Received a request:", req.method);
     const forwarded = req.headers["x-forwarded-for"];
-    console.log("Forwarded for:", forwarded);
-    
+    const ip = forwarded ? forwarded.split(',')[0] : req.socket.remoteAddress;
+    console.log("Request from IP:",ip);     
+    const geo = geoip.lookup(ip) || { country: 'Unknown' };
+    console.log("Request from region:", geo.country);
 
 
     if (req.method !== "POST") {
