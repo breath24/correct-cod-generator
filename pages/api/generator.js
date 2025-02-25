@@ -4,6 +4,10 @@ import { supabase } from '../../lib/supabase';
 
 export default async function handler(req, res) {
     console.log("Received a request:", req.method);
+    const forwarded = req.headers["x-forwarded-for"];
+    console.log("Forwarded for:", forwarded);
+    
+
 
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method Not Allowed" });
