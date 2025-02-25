@@ -1,5 +1,6 @@
 // Import the get_chat_response function (assuming it's exported in a separate file)
 import get_chat_response from './OpenAIChat.js';  // Adjust the path accordingly
+import { supabase } from '../../lib/supabase';
 
 export default async function handler(req, res) {
     console.log("Received a request:", req.method);
@@ -54,6 +55,25 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Failed to get response from OpenAI API" });
         }else{
             console.log("GPT-4 Response received:", chatResponse);
+        }
+
+        // Store the request and response in Supabase
+        const { error } = await supabase
+            .from('code_generations')
+            .insert({
+                language,
+                function_name: functionName,
+                parameters,
+                return_type: returnType,
+                description,
+                security,
+                prompt,
+                generated_code: chatResponse,
+                created_at: new Date().toISOString()
+            });
+
+        if (error) {
+            console.log("Error storing data in Supabase:", error);
         }
 
         // Return the generated code in the response
