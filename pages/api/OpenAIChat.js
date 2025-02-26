@@ -18,10 +18,10 @@ async function get_chat_response(prompt) {
         const response = await axios.post(
             API_URL,
             {
-                model: "gpt-4", // Specify GPT-4
-                // model: "o1", // Specify GPT-4
+                //model: "gpt-4", // Specify GPT-4
+                model: "o1-mini", // Specify GPT-4
                 messages: [{ role: "user", content: prompt }],
-                max_tokens: 2000,
+                //max_tokens: 200,
             },
             {
                 headers: {

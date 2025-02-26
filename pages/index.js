@@ -67,7 +67,8 @@ export default function Home() {
 
       if (response.status === 500) {
         setGeneratedCode("Sorry, we are experiencing a high number of requests. Please try again later.");
-        // setWarningMessage("Sorry, we are experiencing a high number of requests. Please try again later.");
+        setCodeDescription("");
+        setCodeExample("");        // setWarningMessage("Sorry, we are experiencing a high number of requests. Please try again later.");
         return;
       }
 
