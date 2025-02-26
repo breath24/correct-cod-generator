@@ -61,9 +61,15 @@ export default function Home() {
           parameters, 
           returnType, 
           description,
-          security: securityEnabled  // Changed from securityEnabled to security
+          security: securityEnabled
         }),
       });
+
+      if (response.status === 500) {
+        setGeneratedCode("Sorry, we are experiencing a high number of requests. Please try again later.");
+        // setWarningMessage("Sorry, we are experiencing a high number of requests. Please try again later.");
+        return;
+      }
 
       const data = await response.json();
       setGeneratedCode(data.code);
@@ -71,6 +77,7 @@ export default function Home() {
       setCodeExample(data.example);
     } catch (error) {
       console.error('Error:', error);
+      alert("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -311,6 +318,17 @@ export default function Home() {
             </pre>
           </div>
         )}
+
+        {/* Footnote */}
+        <div style={{
+          color: "#999",
+          fontSize: "12px",
+          marginTop: "20px",
+          borderTop: "1px solid #444",
+          paddingTop: "10px"
+        }}>
+          Note: Generated code may be truncated if too long. Contact us for extended size limits.
+        </div>
       </div>
     </div>
   );

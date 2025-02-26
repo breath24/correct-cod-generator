@@ -19,6 +19,7 @@ async function get_chat_response(prompt) {
             API_URL,
             {
                 model: "gpt-4", // Specify GPT-4
+                // model: "o1", // Specify GPT-4
                 messages: [{ role: "user", content: prompt }],
                 max_tokens: 2000,
             },
