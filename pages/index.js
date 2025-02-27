@@ -73,6 +73,8 @@ export default function Home() {
         setGeneratedCode("Sorry, we are experiencing a high number of requests. Please try again later.");
         setCodeDescription("");
         setCodeExample("");        // setWarningMessage("Sorry, we are experiencing a high number of requests. Please try again later.");
+        setSyntaxChecked("");
+        setTestCases("");
         return;
       } else if (response.status === 502) {
         setGeneratedCode("The service is temporarily unavailable. Please try again in a few minutes.");

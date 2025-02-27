@@ -76,13 +76,26 @@ export default async function handler(req, res) {
         // Call the get_chat_response function to get the response from GPT-4
         console.log("Calling get_chat_response...");
 
-        const chatResponse = await get_chat_response(prompt);
-
-        if (!chatResponse) {
-            console.log("Failed to get response from OpenAI API");
-            return res.status(500).json({ error: "Failed to get response from OpenAI API" });
-        }else{
+        try {
+            const chatResponse = await get_chat_response(prompt);
+        
+            if (!chatResponse) {
+                console.log("Failed to get response from OpenAI API");
+                return res.status(502).json({ 
+                    error: "OpenAI service is temporarily unavailable",
+                    code: "SERVICE_UNAVAILABLE"
+                });
+            }
             console.log("GPT-4 Response received:", chatResponse);
+        } catch (error) {
+            console.log("Error in generating code:", error);
+            if (error.name === 'FetchError' || error.code === 'ECONNREFUSED') {
+                return res.status(502).json({ 
+                    error: "OpenAI service is temporarily unavailable",
+                    code: "SERVICE_UNAVAILABLE"
+                });
+            }
+            return res.status(500).json({ error: "Internal Server Error" });
         }
 
         // Parse the response into sections
