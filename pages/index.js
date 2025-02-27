@@ -74,6 +74,13 @@ export default function Home() {
         setCodeDescription("");
         setCodeExample("");        // setWarningMessage("Sorry, we are experiencing a high number of requests. Please try again later.");
         return;
+      } else if (response.status === 502) {
+        setGeneratedCode("The service is temporarily unavailable. Please try again in a few minutes.");
+        setCodeDescription("");
+        setCodeExample("");
+        setSyntaxChecked("");
+        setTestCases("");
+        return;
       }
 
       const data = await response.json();
