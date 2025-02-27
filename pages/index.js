@@ -70,14 +70,14 @@ export default function Home() {
       });
 
       if (response.status === 500) {
-        setGeneratedCode("Sorry, we are experiencing a high number of requests. Please try again later.");
+        setGeneratedCode("Sorry, we are experiencing an internal problem. Please try again later.");
         setCodeDescription("");
         setCodeExample("");        // setWarningMessage("Sorry, we are experiencing a high number of requests. Please try again later.");
         setSyntaxChecked("");
         setTestCases("");
         return;
       } else if (response.status === 502) {
-        setGeneratedCode("The service is temporarily unavailable. Please try again in a few minutes.");
+        setGeneratedCode("Sorry, our AI is too busy. Please try again in a few minutes.");
         setCodeDescription("");
         setCodeExample("");
         setSyntaxChecked("");

@@ -76,8 +76,10 @@ export default async function handler(req, res) {
         // Call the get_chat_response function to get the response from GPT-4
         console.log("Calling get_chat_response...");
 
+        let chatResponse; // Declare chatResponse in the outer scope
+
         try {
-            const chatResponse = await get_chat_response(prompt);
+            chatResponse = await get_chat_response(prompt);
         
             if (!chatResponse) {
                 console.log("Failed to get response from OpenAI API");
@@ -107,7 +109,7 @@ export default async function handler(req, res) {
         };
 
         // Simple parsing logic - adjust based on actual response format
-        const responseText = chatResponse.toString();
+        const responseText = chatResponse.toString(); // Now chatResponse is accessible
         const descriptionMatch = responseText.match(/\[DESCRIPTION\](.*?)\[IMPLEMENTATION\]/s);
         const implementationMatch = responseText.match(/\[IMPLEMENTATION\](.*?)\[EXAMPLE\]/s);
         const exampleMatch = responseText.match(/\[EXAMPLE\](.*?)\[TEST_CASES\]/s);
@@ -129,30 +131,31 @@ export default async function handler(req, res) {
         let count_error_found=0;
         if (language.toLowerCase() === "javascript") {
             try {
-                const eslint = new ESLint({
+                 const eslint = new ESLint({
                     overrideConfig: {
                         rules: {
                             "semi": "error",
                             "no-undef": "error",
                             "no-unused-vars": "warn",
                             "no-unreachable": "error",
-                            "quotes": ["error", "single"],
+                            //"quotes": ["error", "single"],
                             "no-extra-parens": "warn"
                         }
                     }
                 });
-                
+
+                // const eslint = new ESLint();
+
                 const results = await eslint.lintText(sections.implementation);
                 if (results[0].messages.length > 0) {
                     results[0].messages.forEach(message => {
-                        if (message.severity === 2)
-                        {
+                        if (message.severity === 2) {
                             count_error_found++;
                             console.log(`Error at line ${message.line}: ${message.message}`);
                         }
                     });
-                } 
-                if(count_error_found===0) console.log(`The code is syntactically checked and no errors found.`);
+                }
+                if (count_error_found === 0) console.log(`The code is syntactically checked and no errors found.`);
             } catch (error) {
                 console.error("ESLint error:", error);
             }
