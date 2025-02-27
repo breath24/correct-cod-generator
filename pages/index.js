@@ -13,6 +13,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [syntaxChecked, setSyntaxChecked] = useState("");
+  const [generateTests, setGenerateTests] = useState(false);
+  const [testCases, setTestCases] = useState("");
 
   useEffect(() => {
     // Only run on client side
@@ -62,7 +64,8 @@ export default function Home() {
           parameters, 
           returnType, 
           description,
-          security: securityEnabled
+          security: securityEnabled,
+          generateTests
         }),
       });
 
@@ -78,6 +81,7 @@ export default function Home() {
       setCodeDescription(data.description);
       setCodeExample(data.example);
       setSyntaxChecked(data.syntax_check);
+      setTestCases(data.testCases);
     } catch (error) {
       console.error('Error:', error);
       alert("An error occurred. Please try again.");
@@ -224,6 +228,41 @@ export default function Home() {
           </label>
         </div>
 
+        <div style={{ 
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px"
+        }}>
+          <input
+            type="checkbox"
+            id="generateTests"
+            checked={generateTests}
+            onChange={(e) => setGenerateTests(e.target.checked)}
+            style={{ 
+              width: "20px",
+              height: "20px",
+              cursor: "pointer",
+              appearance: "none",
+              WebkitAppearance: "none",
+              backgroundColor: generateTests ? "#4CAF50" : "white",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              transition: "background-color 0.3s"
+            }}
+          />
+          <label 
+            htmlFor="generateTests" 
+            style={{ 
+              color: "#444", 
+              fontWeight: "500",
+              cursor: "pointer"
+            }}
+          >
+            Generate test cases
+          </label>
+        </div>
+
         <div style={{ textAlign: "center" }}>
           <button 
             onClick={handleGenerate} 
@@ -344,6 +383,25 @@ export default function Home() {
               borderRadius: "8px"
             }}>
               {codeExample}
+            </pre>
+          </div>
+        )}
+
+        {/* Test Cases Section */}
+        {generateTests && testCases && (
+          <div style={{ marginBottom: "20px" }}>
+            <h3 style={{ color: "#fff", marginBottom: "10px" }}>Test Cases:</h3>
+            <pre style={{ 
+              whiteSpace: "pre-wrap", 
+              wordWrap: "break-word",
+              color: "#e6e6e6",
+              fontSize: "14px",
+              fontFamily: "monospace",
+              backgroundColor: "#1e1e1e",
+              padding: "20px",
+              borderRadius: "8px"
+            }}>
+              {testCases}
             </pre>
           </div>
         )}

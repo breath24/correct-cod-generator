@@ -6,9 +6,12 @@ git add . ; git commit -m "Your commit message" ; git push origin main
 
 - Supabase database
 
+- to run locally netlify version
+netlify dev
+
 - to run locally
 npm run dev
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
 
 - Edit the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 

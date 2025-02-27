@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       return res.status(405).json({ error: "Method Not Allowed" });
     }
 
-    const { language, functionName, parameters, returnType, description, security } = req.body;
+    const { language, functionName, parameters, returnType, description, security, generateTests } = req.body;
 
     console.log("language: ", language);
     console.log("functionName: ", functionName);
@@ -19,6 +19,7 @@ export default async function handler(req, res) {
     console.log("returnType: ", returnType);
     console.log("description: ", description);
     console.log("security: ", security);
+    console.log("generateTests: ", generateTests);
 
     if (!language || !functionName || !parameters || !returnType || !description) {
       return res.status(400).json({ error: "All fields are required" });
@@ -39,6 +40,14 @@ export default async function handler(req, res) {
     // Generate a prompt for the GPT model with security consideration
     const securityClause = security ? 'The code must be protected against common security vulnerabilities including but not limited to: input validation, SQL injection, XSS attacks, buffer overflows, and must follow secure coding practices. ' : '';
     
+    const testCaseClause = generateTests ? `
+[TEST_CASES]
+// Include comprehensive test cases for the function, covering:
+// - Normal cases
+// - Edge cases
+// - Error cases
+// Use appropriate testing framework syntax (Jest for JavaScript, unittest for Python)` : '';
+
     const prompt = `Generate a ${language} function implementation with the following structure:
     [DESCRIPTION]
     A brief, single-paragraph description of what the function does
@@ -48,6 +57,7 @@ export default async function handler(req, res) {
     }
     [EXAMPLE]
     // A single, clear example showing how to use the function
+    // ${testCaseClause}
     
     Requirements:
     - Parameters: ${parameters}
@@ -59,7 +69,7 @@ export default async function handler(req, res) {
     1. Provide only clean, executable code in the IMPLEMENTATION section
     2. Do not include any language identifiers or prefixes (like "javascript", "python", etc.)
     3. Do not use markdown formatting or code block symbols
-    4. Start the implementation directly with the function declaration`;
+    4. Start the implementation directly with the function declaration${generateTests ? '\n5. Provide complete test cases using the appropriate testing framework' : ''}`;
     console.log("prompt: ", prompt);
 
     try {
@@ -79,14 +89,16 @@ export default async function handler(req, res) {
         const sections = {
             description: '',
             implementation: '',
-            example: ''
+            example: '',
+            testCases: ''
         };
 
         // Simple parsing logic - adjust based on actual response format
         const responseText = chatResponse.toString();
         const descriptionMatch = responseText.match(/\[DESCRIPTION\](.*?)\[IMPLEMENTATION\]/s);
         const implementationMatch = responseText.match(/\[IMPLEMENTATION\](.*?)\[EXAMPLE\]/s);
-        const exampleMatch = responseText.match(/\[EXAMPLE\](.*?)$/s);
+        const exampleMatch = responseText.match(/\[EXAMPLE\](.*?)\[TEST_CASES\]/s);
+        const testCasesMatch = generateTests ? responseText.match(/\[TEST_CASES\](.*?)$/s) : null;
 
         if (descriptionMatch) sections.description = descriptionMatch[1].trim();
         if (implementationMatch) {
@@ -98,6 +110,7 @@ export default async function handler(req, res) {
             sections.implementation = implementation;
         }
         if (exampleMatch) sections.example = exampleMatch[1].trim();
+        if (testCasesMatch) sections.testCases = testCasesMatch[1].trim();
         
         console.log("Syntax Check:");
         let count_error_found=0;
@@ -146,6 +159,7 @@ export default async function handler(req, res) {
                 generated_code: sections.implementation,
                 description_section: sections.description,
                 example_section: sections.example,
+                //test_cases: sections.testCases,
                 created_at: new Date().toISOString()
             });
 
@@ -158,7 +172,8 @@ export default async function handler(req, res) {
             description: sections.description,
             code: sections.implementation,
             example: sections.example,
-            syntax_check: (count_error_found==0) ? "Passed" : "Failed"
+            syntax_check: (count_error_found==0) ? "Passed" : "Failed",
+            testCases: generateTests ? sections.testCases : null
         });
 
     } catch (error) {
