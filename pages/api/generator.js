@@ -1,6 +1,7 @@
 // Import the get_chat_response function (assuming it's exported in a separate file)
 import get_chat_response from './OpenAIChat.js';  // Adjust the path accordingly
 import { supabase } from '../../lib/supabase';
+const { ESLint } = require("eslint");
 
 
 export default async function handler(req, res) {
@@ -54,7 +55,11 @@ export default async function handler(req, res) {
     - Operation: ${description}
     ${securityClause}
     
-    Important: Provide only clean, executable code in the IMPLEMENTATION section without markdown formatting or code block symbols.`;
+    Important instructions:
+    1. Provide only clean, executable code in the IMPLEMENTATION section
+    2. Do not include any language identifiers or prefixes (like "javascript", "python", etc.)
+    3. Do not use markdown formatting or code block symbols
+    4. Start the implementation directly with the function declaration`;
     console.log("prompt: ", prompt);
 
     try {
@@ -93,6 +98,39 @@ export default async function handler(req, res) {
             sections.implementation = implementation;
         }
         if (exampleMatch) sections.example = exampleMatch[1].trim();
+        
+        console.log("Syntax Check:");
+        let count_error_found=0;
+        if (language.toLowerCase() === "javascript") {
+            try {
+                const eslint = new ESLint({
+                    overrideConfig: {
+                        rules: {
+                            "semi": "error",
+                            "no-undef": "error",
+                            "no-unused-vars": "warn",
+                            "no-unreachable": "error",
+                            "quotes": ["error", "single"],
+                            "no-extra-parens": "warn"
+                        }
+                    }
+                });
+                
+                const results = await eslint.lintText(sections.implementation);
+                if (results[0].messages.length > 0) {
+                    results[0].messages.forEach(message => {
+                        if (message.severity === 2)
+                        {
+                            count_error_found++;
+                            console.log(`Error at line ${message.line}: ${message.message}`);
+                        }
+                    });
+                } 
+                if(count_error_found===0) console.log(`The code is syntactically checked and no errors found.`);
+            } catch (error) {
+                console.error("ESLint error:", error);
+            }
+        }
 
         // Store the structured data in Supabase
         const { error } = await supabase
@@ -119,7 +157,8 @@ export default async function handler(req, res) {
         res.status(200).json({
             description: sections.description,
             code: sections.implementation,
-            example: sections.example
+            example: sections.example,
+            syntax_check: (count_error_found==0) ? "Passed" : "Failed"
         });
 
     } catch (error) {

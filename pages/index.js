@@ -12,6 +12,7 @@ export default function Home() {
   const [securityEnabled, setSecurityEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [syntaxChecked, setSyntaxChecked] = useState("");
 
   useEffect(() => {
     // Only run on client side
@@ -76,6 +77,7 @@ export default function Home() {
       setGeneratedCode(data.code);
       setCodeDescription(data.description);
       setCodeExample(data.example);
+      setSyntaxChecked(data.syntax_check);
     } catch (error) {
       console.error('Error:', error);
       alert("An error occurred. Please try again.");
@@ -300,6 +302,32 @@ export default function Home() {
             {generatedCode || "Generated code will appear here..."}
           </pre>
         </div>
+
+        {/* Syntax Check Section */}
+        {syntaxChecked && (
+          <div style={{ marginBottom: "20px" }}>
+            <h3 style={{ color: "#fff", marginBottom: "10px" }}>Syntax Check:</h3>
+            <div style={{ 
+              color: "#e6e6e6",
+              backgroundColor: syntaxChecked === "Passed" ? "rgba(76, 175, 80, 0.2)" : "rgba(244, 67, 54, 0.2)",
+              padding: "15px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              border: `1px solid ${syntaxChecked === "Passed" ? "#4CAF50" : "#f44336"}`
+            }}>
+              <span style={{ 
+                color: syntaxChecked === "Passed" ? "#4CAF50" : "#f44336",
+                fontSize: "18px" 
+              }}>
+                {syntaxChecked === "Passed" ? "✓" : "✕"}
+              </span>
+              {syntaxChecked}
+            </div>
+          </div>
+        )}
 
         {/* Example Section */}
         {codeExample && (
